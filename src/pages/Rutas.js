@@ -10,18 +10,18 @@ class Rutas extends Component {
       InterfacesWan: "",
       InterfacesLan: "",
       Alias: "",
+      AliasWan: "",
+      AliasLan: "",
       Servicio: "",
       TipoIP: "",
-      RutaDefault: true,
+      RutaDefault: false,
       Gateway: "",
       RedRutaEstatica: "",
       MascaraRutaEstatica: "",
       GatewayRutaEstatica: "",
-      // RutasEstaticas: [],
       Prioridad: "",
       Rutas: "",
-      id: "60e6840d443b8d13bcfc8d56", //id cliente
-      //id: "6127af643ed47f22941ccfcd",
+      id: "612d88527e68291480780dd9",
     };
   }
 
@@ -46,8 +46,6 @@ class Rutas extends Component {
         console.log(error);
       }
     );
-
-    
   }
 
   handleChange = (e) => {
@@ -55,11 +53,16 @@ class Rutas extends Component {
     const alias = value.split(".")[0];
     const tipoIP = value.split(".")[1];
     const servicio = value.split(".")[2];
+    const gateway = value.split(",")[1];
 
     this.setState({
       TipoIP: tipoIP,
       Servicio: servicio,
+      AliasWan: "",
+      AliasLan: "",
       [name]: alias,
+      Alias: alias,
+      Gateway: gateway,
     });
   };
 
@@ -76,80 +79,66 @@ class Rutas extends Component {
     });
   };
 
- /*  handleAddRow = (e) => {
-    e.preventDefault();
-    if(this.state.RedRutaEstatica !== "" && this.state.MascaraRutaEstatica !== ""){
-      this.setState((prevState, props) => {
-        const row = {
-          red: this.state.RedRutaEstatica.trim(),
-          mascara: this.state.MascaraRutaEstatica.trim(),
-          gateway: this.state.GatewayRutaEstatica.trim(),
-          prioridad: this.state.Prioridad.trim(),
-        };
-        return {
-          RutasEstaticas: [...prevState.RutasEstaticas, row],
-          RedRutaEstatica: "",
-          MascaraRutaEstatica: "",
-          Prioridad: "",
-        };
-      });
-    }
-  
-  }; */
-
   handleSubmit = (event) => {
-   
-    const hope = this.state.RutaDefault === true ? this.state.Gateway : this.state.GatewayRutaEstatica
-
     
-   
+    const hope = 
+      this.state.AliasLan !== ""
+        ? this.state.GatewayRutaEstatica
+        : this.state.Gateway
+
+    const red = 
+      this.state.RutaDefault === false
+        ? this.state.RedRutaEstatica.trim()
+        : "0.0.0.0"
+    
+    const mascara = 
+      this.state.RutaDefault === false
+        ? this.state.MascaraRutaEstatica.trim()
+        : "0.0.0.0"
+
     const data = {
       Alias: this.state.Alias,
       Default: this.state.RutaDefault,
-      Red: this.state.RedRutaEstatica.trim(),
-      Mascara: this.state.MascaraRutaEstatica.trim(),
-      Gateway: hope.trim(),
+      Red: red,
+      Mascara: mascara,
+      Gateway: hope,
       Prioridad: this.state.Prioridad.trim(),
     };
- 
-    console.log(data)
-    
+
+   // console.log(data);
+
     const url = "http://localhost:4000/rutas";
 
-    if (this.state.Alias !== ""){
-   /*  if(this.state.RutaDefault === true || this.state.RutasEstaticas.length !== 0 ){*/
-    axios({
-      method: "post",
-      url: url,
-      data,
-    }).then(
-      (response) => {
-        this.setState({
-          Servicio: "",
-          TipoIP: "",
-          RutaDefault: true,
-          Gateway: "",
-          RedRutaEstatica: "",
-          MascaraRutaEstatica: "",
-          GatewayRutaEstatica: "",
-         /*  RutasEstaticas: [], */
-          Prioridad:"",
-        });
-        alert("Registro Exitoso")
-      },
-      (error) => {
-        alert("Ha ocurrido un error");
-        console.log(error);
-      }
-    ); 
-    /*   }else{
-        alert("Registra las Rutas Específicas")
-      } */
-    }else{
-      alert("Selecciona la interface")
+    if (this.state.AliasWan !== "" || this.state.AliasLan !== "") {
+      axios({
+        method: "post",
+        url: url,
+        data,
+      }).then(
+        (response) => {
+          this.setState({
+            Servicio: "",
+            TipoIP: "",
+            RutaDefault: false,
+            Gateway: "",
+            RedRutaEstatica: "",
+            MascaraRutaEstatica: "",
+            GatewayRutaEstatica: "",
+            Prioridad: "",
+            Alias:"",
+            AliasLan: "",
+            AliasWan: "",
+          });
+          alert("Registro Exitoso");
+        },
+        (error) => {
+          alert("Ha ocurrido un error");
+          console.log(error);
+        }
+      );
+    } else {
+      alert("Selecciona la interface");
     }
-
-
   };
 
   render() {
@@ -183,8 +172,8 @@ class Rutas extends Component {
             {this.state.InterfacesWan.length !== 0 && (
               <span>
                 <select
-                  name="Alias"
-                  value={this.state.Alias}
+                  name="AliasWan"
+                  value={this.state.AliasWan}
                   onChange={this.handleChange}
                 >
                   <option value=""></option>
@@ -192,7 +181,13 @@ class Rutas extends Component {
                     <option
                       key={key}
                       value={
-                        wan.Alias + "." + wan.TipoIP + "." + wan.TipoServicio
+                        wan.Alias +
+                        "." +
+                        wan.TipoIP +
+                        "." +
+                        wan.TipoServicio +
+                        "," +
+                        wan.Gateway
                       }
                     >
                       {wan.Alias}
@@ -208,8 +203,8 @@ class Rutas extends Component {
             {this.state.InterfacesLan.length !== 0 && (
               <span>
                 <select
-                  name="Alias"
-                  value={this.state.Alias}
+                  name="AliasLan"
+                  value={this.state.AliasLan}
                   onChange={this.handleChange}
                 >
                   <option value=""></option>
@@ -224,35 +219,29 @@ class Rutas extends Component {
           </div>
 
           <hr></hr>
-          {this.state.Alias ==="" && (
-          <div className="mb-2 mt-3 d-flex align-items-center">
-            <label>INTERFACE: </label>
-            <input
-              className="form-control ml-2"
-              type="text"
-              value={this.state.Alias}
-              readOnly
-            />
-          </div>
-          )}
-
-          {this.state.Alias !=="" && (
+          {this.state.AliasLan !== "" && (
             <div className="mb-2 mt-3 d-flex align-items-center">
-            <label>INTERFACE: </label>
-            <input
-              className="form-control ml-2 green-input"
-              type="text"
-              value={this.state.Alias}
-              readOnly
-            />
-          </div>
+              <label>INTERFACE: </label>
+              <input
+                className="form-control ml-2 green-input"
+                type="text"
+                value={this.state.AliasLan}
+                readOnly
+              />
+            </div>
           )}
 
-          {/* Cuando selecciona Lan o Wan le da a escoger si genera la Ruta estática por default */}
-
-          {this.state.Alias !== "" && (
+          {this.state.AliasWan !== "" && (
             <span>
-              &emsp;
+              <div className="mb-2 mt-3 d-flex align-items-center">
+                <label>INTERFACE: </label>
+                <input
+                  className="form-control ml-2 green-input"
+                  type="text"
+                  value={this.state.AliasWan}
+                  readOnly
+                />
+              </div>
               <input
                 name="RutaDefault"
                 type="checkbox"
@@ -272,130 +261,148 @@ class Rutas extends Component {
               <div className="mb-2 d-flex align-items-center">
                 {this.state.RutaDefault === true && (
                   <span>
-                    <span>
-                      <div className="mb-2 d-flex align-items-center">
-                        <label className="label-light">
-                          &ensp;&ensp;Gateway
-                        </label>
-                        <input
-                          className="form-control ml-2"
-                          type="text"
-                          name="Gateway"
-                          value={this.state.Gateway}
-                          onChange={this.handleOnChange}
-                          
-                        />
-                      </div>
-                      <div className="mb-2 d-flex align-items-center">
-                        <label className="label-light">&ensp;&ensp;Prioridad</label>
-                        <input
-                          className="form-control ml-2"
-                          type="text"
-                          name="Prioridad"
-                          value={this.state.Prioridad}
-                          onChange={this.handleOnChange}
-                        />
-                      </div>
-                    </span>
+                    <div className="mb-2 d-flex align-items-center">
+                      <label className="label-light">&ensp;&ensp;Gateway</label>
+                      <input
+                        className="form-control ml-2"
+                        type="text"
+                        name="Gateway"
+                        value={this.state.Gateway}
+                        readOnly
+                      />
+                    </div>
+                    <div className="mb-2 d-flex align-items-center">
+                      <label className="label-light">
+                        &ensp;&ensp;Prioridad
+                      </label>
+                      <input
+                        className="form-control ml-2"
+                        type="text"
+                        name="Prioridad"
+                        value={this.state.Prioridad}
+                        onChange={this.handleOnChange}
+                      />
+                    </div>
                   </span>
                 )}
-              </div>
-              {this.state.RutaDefault === false && (
-                <span>
-                  <div>
-                    <div className="col-12">
-                      <label className="mt-2 mb-2">
-                        Agregar Rutas Estáticas Específicas
-                      </label>
-                      <div className="mb-2 d-flex align-items-center">
-                        <label className="label-light">Red</label>
-                        <input
-                          className="form-control ml-2"
-                          type="text"
-                          name="RedRutaEstatica"
-                          value={this.state.RedRutaEstatica}
-                          onChange={this.handleOnChange}
-                        />
-                      </div>
+                {this.state.RutaDefault === false && (
+                  <span>
+                    <div>
+                      <div className="col-12">
+                        <label className="mt-2 mb-2">
+                          Agregar Rutas Estáticas Específicas
+                        </label>
+                        <div className="mb-2 d-flex align-items-center">
+                          <label className="label-light">Red</label>
+                          <input
+                            className="form-control ml-2"
+                            type="text"
+                            name="RedRutaEstatica"
+                            value={this.state.RedRutaEstatica}
+                            onChange={this.handleOnChange}
+                          />
+                        </div>
 
-                      <div className="mb-2 d-flex align-items-center">
-                        <label className="label-light">Máscara de Red</label>
-                        <input
-                          className="form-control ml-2"
-                          type="text"
-                          name="MascaraRutaEstatica"
-                          value={this.state.MascaraRutaEstatica}
-                          onChange={this.handleOnChange}
-                        />
-                      </div>
-                      <div className="mb-2 d-flex align-items-center">
-                        <label className="label-light">Gateway</label>
-                        <input
-                          className="form-control ml-2"
-                          type="text"
-                          name="GatewayRutaEstatica"
-                          value={this.state.GatewayRutaEstatica}
-                          onChange={this.handleOnChange}
-                        />
-                      </div>
-                      <div className="mb-2 d-flex align-items-center">
-                        <label className="label-light">Prioridad</label>
-                        <input
-                          className="form-control ml-2"
-                          type="text"
-                          name="Prioridad"
-                          value={this.state.Prioridad}
-                          onChange={this.handleOnChange}
-                        />
-                      </div>
-                      <div className="row justify-content-center mt-3 mb-2">
-                        <div className="col">
-                         {/*  <button
-                            className="m-1 p-1 btn btn-outline-primary"
-                            onClick={this.handleAddRow}
-                          >
-                            Agregar Ruta
-                          </button> */}
+                        <div className="mb-2 d-flex align-items-center">
+                          <label className="label-light">Máscara de Red</label>
+                          <input
+                            className="form-control ml-2"
+                            type="text"
+                            name="MascaraRutaEstatica"
+                            value={this.state.MascaraRutaEstatica}
+                            onChange={this.handleOnChange}
+                          />
+                        </div>
+                        <div className="mb-2 d-flex align-items-center">
+                          <label className="label-light">Gateway</label>
+                          <input
+                            className="form-control ml-2"
+                            type="text"
+                            name="GatewayRutaEstatica"
+                            value={this.state.Gateway}
+                            readOnly
+                          />
+                        </div>
+                        <div className="mb-2 d-flex align-items-center">
+                          <label className="label-light">Prioridad</label>
+                          <input
+                            className="form-control ml-2"
+                            type="text"
+                            name="Prioridad"
+                            value={this.state.Prioridad}
+                            onChange={this.handleOnChange}
+                          />
                         </div>
                       </div>
                     </div>
-                  {/*   <div className="col-8 size-small">
-                      {this.state.RutasEstaticas.length !== 0 && (
-                        <span>
-                          <div className="size-bold">
-                            Redes Estáticas Registradas
-                          </div>
-                          {this.state.RutasEstaticas.map((ruta, i) => {
-                            return (
-                              <div key={i}>
-                                Red = {ruta.red} Máscara = {ruta.mascara}
-                                {this.state.TipoIP !== "DHCP" && (
-                                  <span> Gateway = {ruta.gateway}</span>
-                                )} Prioridad = {ruta.prioridad}
-                              </div>
-                            );
-                          })}
-                        </span>
-                      )}
-                    </div> */}
-                  </div>
-                  <hr></hr>
-                </span>
-              )}
+                    <hr></hr>
+                  </span>
+                )}
+              </div>
             </span>
           )}
 
-          {/* Cuando selecciona Lan o Wan le da a escoger si genera la Ruta estática por default */}
+          {this.state.AliasLan !== "" && (
+            <span>
+              <div>
+                <div className="col-12">
+                  <label className="mt-2 mb-2">
+                    Agregar Rutas Estáticas Específicas
+                  </label>
+                  <div className="mb-2 d-flex align-items-center">
+                    <label className="label-light">Red</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="RedRutaEstatica"
+                      value={this.state.RedRutaEstatica}
+                      onChange={this.handleOnChange}
+                    />
+                  </div>
+
+                  <div className="mb-2 d-flex align-items-center">
+                    <label className="label-light">Máscara de Red</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="MascaraRutaEstatica"
+                      value={this.state.MascaraRutaEstatica}
+                      onChange={this.handleOnChange}
+                    />
+                  </div>
+                  <div className="mb-2 d-flex align-items-center">
+                    <label className="label-light">Gateway</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="GatewayRutaEstatica"
+                      value={this.state.GatewayRutaEstatica}
+                      onChange={this.handleOnChange}
+                    />
+                  </div>
+                  <div className="mb-2 d-flex align-items-center">
+                    <label className="label-light">Prioridad</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="Prioridad"
+                      value={this.state.Prioridad}
+                      onChange={this.handleOnChange}
+                    />
+                  </div>
+                </div>
+              </div>
+              <hr></hr>
+            </span>
+          )}
+
           <div className="col text-center">
-            <button 
-            type="submit" 
-            className="m-1 p-1 btn btn-outline-primary"
-            >
+            <button type="submit" className="m-1 p-1 btn btn-outline-primary">
               Guardar Configuración
             </button>
           </div>
- {/*MOSTRAR INTERFACES RUTAS  REGISTRADAS///////////////////////////////////*/}
- {this.state.Rutas.length !== 0 && (
+          {/*MOSTRAR INTERFACES RUTAS  REGISTRADAS///////////////////////////////////*/}
+          {this.state.Rutas.length !== 0 && (
             <div>
               <hr></hr>
               <label>RUTAS REGISTRADAS</label>
@@ -427,7 +434,6 @@ class Rutas extends Component {
               <br></br>
               <br></br>
             </div>
-            
           )}
           {/*FIN MOSTRAR RUTAS REGISTRADAS////////////////////////////////////*/}
         </form>

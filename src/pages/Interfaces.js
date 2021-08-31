@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+
 class Interfaces extends Component {
   constructor(props) {
     super(props);
@@ -15,8 +16,8 @@ class Interfaces extends Component {
       Mascara: "",
       Gateway: "",
       Vlan: "",
-      //id: "6127af643ed47f22941ccfcd", //id cliente
-      id: "60e6840d443b8d13bcfc8d56",
+      //id: "6127af643ed47f22941ccfcd", //id LOCal
+      id: "612d88527e68291480780dd9",
       WanSaved: "",
       LanSaved: "",
       LanAlias: "",

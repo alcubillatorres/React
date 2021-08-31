@@ -33,7 +33,18 @@ class Home extends Component {
             </Link>
           </h3>
         </div>
+
+        <div className="alert alert-light justify-content-center d-flex">
+        <h3>
+          <Link to="/nateo" className="alert-link">
+            Configuración de Nat
+          </Link>
+          </h3>
+        </div>
+
       </div>
+
+      
     );
   }
 }

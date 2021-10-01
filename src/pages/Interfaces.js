@@ -3,9 +3,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
 class Interfaces extends Component {
   constructor(props) {
+    console.log("constructor props");
     super(props);
     this.state = {
       TipoInterface: "",
@@ -16,8 +16,8 @@ class Interfaces extends Component {
       Mascara: "",
       Gateway: "",
       Vlan: "",
-      //id: "6127af643ed47f22941ccfcd", //id LOCal
-      id: "612d88527e68291480780dd9",
+      id: "6127af643ed47f22941ccfcd", //id LOCal
+      //id: "612d88527e68291480780dd9",
       WanSaved: "",
       LanSaved: "",
       LanAlias: "",
@@ -33,6 +33,7 @@ class Interfaces extends Component {
   }
 
   componentDidMount() {
+    console.log("Component DidMount");
     const url = "http://localhost:4000";
     const params = { id: this.state.id };
 
@@ -54,16 +55,17 @@ class Interfaces extends Component {
     );
   }
 
-  handleOnChange = (e) =>{
-    const {name, value } = e.target
+  handleOnChange = (e) => {
+    console.log("handleOnChange");
+    const { name, value } = e.target;
     this.setState({
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
 
   handleSubmit = (event) => {
+    console.log("handleSubmit");
     const data = {
-      
       TipoInterface: this.state.TipoInterface,
       Alias: this.state.Alias.trim(),
       TipoServicio: this.state.Servicio,
@@ -118,6 +120,7 @@ class Interfaces extends Component {
   };
 
   render() {
+    console.log("render");
     return (
       <div className="container">
         <div className="row mt-5">
@@ -156,6 +159,7 @@ class Interfaces extends Component {
           {/*FIN SELECCION MENU WAN /LAN*/}
 
           {/* Configuración WAN ///////////////////////////////////////////////////////*/}
+          {this.state.WanSaved.length === 0 && (
           <span>
             {this.state.TipoInterface === "WAN" && (
               <div className="align-items-center">
@@ -261,162 +265,170 @@ class Interfaces extends Component {
                     required
                   />
                 </div>
-
-                <button type="submit" className="mt-3 btn btn-outline-primary">
-                  Agregar
-                </button>
-
+               
+                    <button
+                      type="submit"
+                      className="mt-3 btn btn-outline-primary"
+                    >
+                      Agregar
+                    </button>
+                 
                 <br></br>
                 <br></br>
               </div>
             )}
           </span>
+          )}
           {/* FIN Configuración WAN//////////////////////////////////////////////*/}
 
           {/* Configuración LAN//////////////////////////////////////////////*/}
           {this.state.TipoInterface === "LAN" && (
             <div>
-              <div className="align-items-center">
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Nombre LAN (Alias)</label>
-                  <input
-                    className="form-control ml-2 d-flex align-items-center"
-                    type="text"
-                    name="LanAlias"
-                    value={this.state.LanAlias}
-                    onChange={this.handleOnChange}
-                    required
-                  />
-                  <span className="tc-img">
-                    &ensp; Nombre con la que se va a identificar a la interface
-                  </span>
-                </div>
+              {this.state.LanSaved.length === 0 && (
+                <div className="align-items-center">
+                  <div className="mb-2 d-flex align-items-center">
+                    <label>Nombre LAN (Alias)</label>
+                    <input
+                      className="form-control ml-2 d-flex align-items-center"
+                      type="text"
+                      name="LanAlias"
+                      value={this.state.LanAlias}
+                      onChange={this.handleOnChange}
+                      required
+                    />
+                    <span className="tc-img">
+                      &ensp; Nombre con la que se va a identificar a la
+                      interface
+                    </span>
+                  </div>
 
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Dirección IP</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    name="LanDireccionIP"
-                    value={this.state.LanDireccionIP}
-                    onChange={this.handleOnChange}
-                    required
-                  />
-                  <span className="tc-img">
-                    &ensp; Direccion IP de la interface del firewall
-                  </span>
-                </div>
+                  <div className="mb-2 d-flex align-items-center">
+                    <label>Dirección IP</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="LanDireccionIP"
+                      value={this.state.LanDireccionIP}
+                      onChange={this.handleOnChange}
+                      required
+                    />
+                    <span className="tc-img">
+                      &ensp; Direccion IP de la interface del firewall
+                    </span>
+                  </div>
 
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Máscara de Red</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    name="LanMascara"
-                    value={this.state.LanMascara}
-                    onChange={this.handleOnChange}
-                    required
-                  />
-                </div>
+                  <div className="mb-2 d-flex align-items-center">
+                    <label>Máscara de Red</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="LanMascara"
+                      value={this.state.LanMascara}
+                      onChange={this.handleOnChange}
+                      required
+                    />
+                  </div>
 
-                <div className="mb-2 d-flex align-items-center">
-                  <label>VLAN</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    name="LanVlan"
-                    value={this.state.LanVlan}
-                    onChange={this.handleOnChange}
-                    placeholder="[1-4096]"
-                    required
-                  />
-                </div>
+                  <div className="mb-2 d-flex align-items-center">
+                    <label>VLAN</label>
+                    <input
+                      className="form-control ml-2"
+                      type="text"
+                      name="LanVlan"
+                      value={this.state.LanVlan}
+                      onChange={this.handleOnChange}
+                      placeholder="[1-4096]"
+                      required
+                    />
+                  </div>
 
-                <div className="select-control mb-2 d-flex align-items-center">
-                  <label>Entrega DHCP</label>
-                  <select
-                    value={this.state.DHCP}
-                    onChange={this.handleOnChange}
-                    name="DHCP"
-                    className="form-select ml-2"
+                  <div className="select-control mb-2 d-flex        align-items-center">
+                    <label>Entrega DHCP</label>
+                    <select
+                      value={this.state.DHCP}
+                      onChange={this.handleOnChange}
+                      name="DHCP"
+                      className="form-select ml-2"
+                    >
+                      <option value="SI">Sí</option>
+                      <option value="NO">No</option>
+                    </select>
+                    <span className="tc-img">
+                      &ensp; Seleccionar "Sí" en caso de que la interface
+                      entregue DHCP
+                    </span>
+                  </div>
+                  {this.state.DHCP === "SI" && (
+                    <span>
+                      <div className="mb-2 d-flex align-items-center">
+                        <label>Rango de DHCP</label>
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="DHCPFrom"
+                          value={this.state.DHCPFrom}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="DHCPTo"
+                          value={this.state.DHCPTo}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+                        <span className="tc-img">
+                          &ensp; Rango de direcciones IP que serán entregadas
+                        </span>
+                      </div>
+
+                      <div className="mb-2 d-flex align-items-center">
+                        <label>Servidor DNS 1</label>
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="LanServidorDNS1"
+                          value={this.state.LanServidorDNS1}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+                        <span className="tc-img">
+                          &ensp; Seleccionar si se desea usar el servidor DNS de
+                          Axtel (207.248.224.71) o especificar cual se desea
+                          usar en el DHCP
+                        </span>
+                      </div>
+
+                      <div className="mb-2 d-flex align-items-center">
+                        <label>Servidor DNS 2</label>
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="LanServidorDNS2"
+                          value={this.state.LanServidorDNS2}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+                        <span className="tc-img">
+                          &ensp; Seleccionar si se desea usar el servidor DNS de
+                          Axtel (207.248.224.71) o especificar cual se desea
+                          usar en el DHCP.
+                        </span>
+                      </div>
+                    </span>
+                  )}
+                  <button
+                    type="submit"
+                    className="mt-3 btn btn-outline-primary"
                   >
-                    <option value="SI">Sí</option>
-                    <option value="NO">No</option>
-                  </select>
-                  <span className="tc-img">
-                    &ensp; Seleccionar "Sí" en caso de que la interface entregue
-                    DHCP
-                  </span>
+                    Agregar
+                  </button>
+                  <br></br>
+                  <br></br>
                 </div>
-                {this.state.DHCP === "SI" && (
-                  <span>
-                    <div className="mb-2 d-flex align-items-center">
-                      <label>Rango de DHCP</label>
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="DHCPFrom"
-                        value={this.state.DHCPFrom}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="DHCPTo"
-                        value={this.state.DHCPTo}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-                      <span className="tc-img">
-                        &ensp; Rango de direcciones IP que serán entregadas
-                      </span>
-                    </div>
-
-                    <div className="mb-2 d-flex align-items-center">
-                      <label>Servidor DNS 1</label>
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="LanServidorDNS1"
-                        value={this.state.LanServidorDNS1}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-                      <span className="tc-img">
-                        &ensp; Seleccionar si se desea usar el servidor DNS de
-                        Axtel (207.248.224.71) o especificar cual se desea usar
-                        en el DHCP
-                      </span>
-                    </div>
-
-                    <div className="mb-2 d-flex align-items-center">
-                      <label>Servidor DNS 2</label>
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="LanServidorDNS2"
-                        value={this.state.LanServidorDNS2}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-                      <span className="tc-img">
-                        &ensp; Seleccionar si se desea usar el servidor DNS de
-                        Axtel (207.248.224.71) o especificar cual se desea usar
-                        en el DHCP.
-                      </span>
-                    </div>
-                  </span>
-                )}
-
-                <button type="submit" className="mt-3 btn btn-outline-primary">
-                  Agregar
-                </button>
-
-                <br></br>
-                <br></br>
-              </div>
+              )}
             </div>
           )}
           {/*FIN Configuración LAN//////////////////////////////////////////////*/}

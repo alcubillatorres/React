@@ -21,7 +21,7 @@ class Rutas extends Component {
       GatewayRutaEstatica: "",
       Prioridad: "",
       Rutas: "",
-      id: "612d88527e68291480780dd9",
+      id: "6127af643ed47f22941ccfcd",
     };
   }
 
@@ -80,21 +80,20 @@ class Rutas extends Component {
   };
 
   handleSubmit = (event) => {
-    
-    const hope = 
+    const hope =
       this.state.AliasLan !== ""
         ? this.state.GatewayRutaEstatica
-        : this.state.Gateway
+        : this.state.Gateway;
 
-    const red = 
+    const red =
       this.state.RutaDefault === false
         ? this.state.RedRutaEstatica.trim()
-        : "0.0.0.0"
-    
-    const mascara = 
+        : "0.0.0.0";
+
+    const mascara =
       this.state.RutaDefault === false
         ? this.state.MascaraRutaEstatica.trim()
-        : "0.0.0.0"
+        : "0.0.0.0";
 
     const data = {
       Alias: this.state.Alias,
@@ -105,7 +104,7 @@ class Rutas extends Component {
       Prioridad: this.state.Prioridad.trim(),
     };
 
-   // console.log(data);
+    // console.log(data);
 
     const url = "http://localhost:4000/rutas";
 
@@ -125,7 +124,7 @@ class Rutas extends Component {
             MascaraRutaEstatica: "",
             GatewayRutaEstatica: "",
             Prioridad: "",
-            Alias:"",
+            Alias: "",
             AliasLan: "",
             AliasWan: "",
           });
@@ -164,13 +163,11 @@ class Rutas extends Component {
         </div>
         <form onSubmit={this.handleSubmit}>
           <hr></hr>
-
           <h5>Selecciona la interface a configurar</h5>
           <div className="mb-2">
-            <label className="mr-2">WAN</label>
-
             {this.state.InterfacesWan.length !== 0 && (
               <span>
+                <label className="mr-2">WAN</label>
                 <select
                   name="AliasWan"
                   value={this.state.AliasWan}
@@ -198,10 +195,9 @@ class Rutas extends Component {
             )}
           </div>
           <div className="mb-2">
-            <label className="mr-2">LAN</label>
-
             {this.state.InterfacesLan.length !== 0 && (
               <span>
+                <label className="mr-2">LAN</label>
                 <select
                   name="AliasLan"
                   value={this.state.AliasLan}

@@ -1,12 +1,16 @@
 import React from 'react';
-import Home from "./pages/Home"
+//import Home from "./pages/Home"
+import Inicio from "./pages/Inicio"
 import Interfaces from "./pages/Interfaces";
 import Rutas from "./pages/Rutas"
 import Nateo from "./pages/Nateo"
 import Cliente from "./pages/Cliente"
-
+import AltaCliente from "./pages/AltaCliente"
+import AltaSitio from "./pages/AltaSitio"
 
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+
+
 
 const App=()=> {
 return (
@@ -14,7 +18,9 @@ return (
     {/* <Header /> */}
     <div className="container">
       <Switch>
-        <Route exact path="/" component={Home} />
+        <Route exact path="/" component={Inicio} />
+        <Route exact path="/altaCliente" component={AltaCliente} />
+        <Route exact path="/altaSitio" component={AltaSitio} />
         <Route path="/cliente" component={Cliente} />
         <Route  path="/interfaces" component={Interfaces} />
         <Route path="/rutas" component={Rutas} />

@@ -1,14 +1,18 @@
 import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 
-
-class Interfaces extends Component {
+class Configuraciones extends Component {
+  _isMounted = false;
   constructor(props) {
-    console.log("constructor props");
     super(props);
+
     this.state = {
+      id: JSON.parse(localStorage.getItem("idSitio")),
+      WanSaved: "",
+      LanSaved: "",
       TipoInterface: "",
       Alias: "",
       Servicio: "INTERNET",
@@ -17,10 +21,6 @@ class Interfaces extends Component {
       Mascara: "",
       Gateway: "", 
       Vlan: "",
-      id: "6127af643ed47f22941ccfcd", //id LOCal
-      //id: "612d88527e68291480780dd9",
-      WanSaved: "",
-      LanSaved: "",
       LanAlias: "",
       LanDireccionIP: "",
       LanMascara: "",
@@ -31,11 +31,12 @@ class Interfaces extends Component {
       LanServidorDNS1: "",
       LanServidorDNS2: "",
     };
-  }
 
+  }
+  
   componentDidMount() {
-    console.log("Component DidMount");
-    const url = "http://localhost:4000";
+    //console.log("Component DidMount");
+    const url = "http://localhost:4000/configuracion";
     const params = { id: this.state.id };
 
     axios({
@@ -44,10 +45,17 @@ class Interfaces extends Component {
       params,
     }).then(
       (response) => {
-        this.setState({
-          WanSaved: response.data.Wan,
-          LanSaved: response.data.Lan,
-        });
+        //console.log("status",response.status)
+        //console.log("res", response.data)
+        if(response.status === 200){
+          //console.log("status")
+          this.setState({
+            WanSaved: response.data.Wan,
+            LanSaved: response.data.Lan,
+          });
+        }
+      
+       
       },
       (error) => {
         alert("Ha ocurrido un error");
@@ -57,15 +65,18 @@ class Interfaces extends Component {
   }
 
   handleOnChange = (e) => {
-    console.log("handleOnChange");
+    //console.log("handleOnChange");
     const { name, value } = e.target;
     this.setState({
       [name]: value,
     });
   };
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   handleSubmit = (event) => {
-    console.log("handleSubmit");
+    //console.log("handleSubmit");
     const data = {
       TipoInterface: this.state.TipoInterface,
       Alias: this.state.Alias.trim(),
@@ -84,6 +95,7 @@ class Interfaces extends Component {
       DHCPTo: this.state.DHCPTo.trim(),
       LanServidorDNS1: this.state.LanServidorDNS1.trim(),
       LanServidorDNS2: this.state.LanServidorDNS2.trim(),
+      Id_Sitio: this.state.id,
     };
 
     const url = "http://localhost:4000";
@@ -119,32 +131,30 @@ class Interfaces extends Component {
       }
     );
   };
+  
 
   render() {
-    console.log("render");
     return (
       <div className="container">
-        <div className="row mt-5">
-          <div className="col-6">
-            <img src="axtel.png" alt="axtel logo" className="image-title"></img>
-          </div>
-          <div className="col-6 d-flex align-items-end flex-column">
-            <div className="mt-auto p-2 alert alert-light">
-              <Link to="/" className="alert-link">
-                Inicio
-              </Link>
-            </div>
-          </div>
+       <Navbar />
+        <div className="mt-auto p-2 alert alert-light">
+          <Link to="/" className="alert-link">
+            <h4 className="d-inline">Inicio&gt;</h4>
+          </Link>
+          <Link to="/altaCliente" className="alert-link">
+            <h4 className="d-inline">Alta Cliente&gt;</h4>
+          </Link>
+          <Link to="/altaSitio" className="alert-link">
+            <h4 className="d-inline">Alta Sitio&gt;</h4>
+          </Link>
+          <Link to="/configuraciones" className="alert-link">
+            <h4 className="d-inline">Alta Configuración&gt;</h4>
+          </Link>
         </div>
-
-        <div className="page-header text-center mt-5">
-          <h1>
-            <small>CONFIGURACIÓN DE INTERFACES</small>
-          </h1>
-        </div>
+        <hr></hr>
         <form onSubmit={this.handleSubmit}>
           {/* SELECCION MENU WAN /LAN*/}
-          <hr></hr>
+
           <label>Agregar Interface (WAN/LAN)</label>
           <select
             name="TipoInterface"
@@ -520,4 +530,4 @@ class Interfaces extends Component {
   }
 }
 
-export default Interfaces;
+export default Configuraciones;

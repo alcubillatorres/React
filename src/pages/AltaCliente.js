@@ -81,7 +81,7 @@ class AltaCliente extends Component {
   };
 
   handleSubmit = (event) => {
-    //console.log("handleSubmit");
+
     const data = {
       Nombre: this.state.Nombre.trim(),
       Numero: this.state.Numero.trim(),

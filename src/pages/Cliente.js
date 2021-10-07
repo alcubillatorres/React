@@ -64,9 +64,10 @@ class Cliente extends Component {
   componentDidMount() {
     const url = "http://localhost:4000/clientes";
 
+
     axios({
       method: "get",
-      url,
+      url: url,
     }).then(
       (response) => {
         console.log(response.data);
@@ -79,6 +80,10 @@ class Cliente extends Component {
         console.log(error);
       }
     );
+
+
+
+    
   }
 
   render() {

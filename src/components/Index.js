@@ -78,7 +78,7 @@ class App extends Component {
       Gateway: this.state.Gateway,
       Vlan: this.state.Vlan,
     };
-    const url = "http://localhost:4000";
+    const url = "http://172.18.10.79:4000";
 
     console.log(data)
     axios({

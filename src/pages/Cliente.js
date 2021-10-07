@@ -37,7 +37,7 @@ class Cliente extends Component {
       Numero: this.state.Numero,
     };
 
-    const url = "http://localhost:4000/clientes";
+    const url = "http://172.18.10.79:4000/clientes";
 
     axios({
       method: "post",
@@ -62,7 +62,7 @@ class Cliente extends Component {
   };
 
   componentDidMount() {
-    const url = "http://localhost:4000/clientes";
+    const url = "http://172.18.10.79:4000/clientes";
 
 
     axios({

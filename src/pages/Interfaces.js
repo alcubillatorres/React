@@ -35,7 +35,7 @@ class Interfaces extends Component {
 
   componentDidMount() {
     console.log("Component DidMount");
-    const url = "http://localhost:4000";
+    const url = "http://172.18.10.79:4000";
     const params = { id: this.state.id };
 
     axios({
@@ -86,7 +86,7 @@ class Interfaces extends Component {
       LanServidorDNS2: this.state.LanServidorDNS2.trim(),
     };
 
-    const url = "http://localhost:4000";
+    const url = "http://172.18.10.79:4000";
     axios({
       method: "post",
       url: url,

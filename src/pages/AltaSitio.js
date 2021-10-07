@@ -25,7 +25,7 @@ class AltaSitio extends Component {
     this._isMounted = true;
 
     if (this._isMounted) {
-      const url = "http://localhost:4000/sitios";
+      const url = "http://172.18.10.79:4000/sitios";
       const params = { id: this.state.id };
 
       axios({
@@ -128,7 +128,7 @@ class AltaSitio extends Component {
       async function postData(location) {
         try {
           let res = await axios({
-            url: "http://localhost:4000/sitios",
+            url: "http://172.18.10.79:4000/sitios",
             data,
             method: "post",
             timeout: 8000,

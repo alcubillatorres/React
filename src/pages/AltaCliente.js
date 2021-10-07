@@ -20,7 +20,7 @@ class AltaCliente extends Component {
     this._isMounted = true;
 
     if (this._isMounted) {
-      const url = "http://localhost:4000/clientes";
+      const url = "http://172.18.10.79:4000/clientes";
       axios({
         method: "get",
         url,
@@ -86,7 +86,7 @@ class AltaCliente extends Component {
       Nombre: this.state.Nombre.trim(),
       Numero: this.state.Numero.trim(),
     };
-    const url = "http://localhost:4000/clientes";
+    const url = "http://172.18.10.79:4000/clientes";
     axios({
       method: "post",
       url: url,

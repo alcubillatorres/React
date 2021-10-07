@@ -26,7 +26,7 @@ class Rutas extends Component {
   }
 
   componentDidMount() {
-    const url = "http://localhost:4000";
+    const url = "http://172.18.10.79:4000";
     const params = { id: this.state.id };
 
     axios({
@@ -106,7 +106,7 @@ class Rutas extends Component {
 
     // console.log(data);
 
-    const url = "http://localhost:4000/rutas";
+    const url = "http://172.18.10.79:4000/rutas";
 
     if (this.state.AliasWan !== "" || this.state.AliasLan !== "") {
       axios({

@@ -36,7 +36,7 @@ class Configuraciones extends Component {
   
   componentDidMount() {
     //console.log("Component DidMount");
-    const url = "http://localhost:4000/configuracion";
+    const url = "http://172.18.10.79:4000/configuracion";
     const params = { id: this.state.id };
 
     axios({
@@ -98,7 +98,7 @@ class Configuraciones extends Component {
       Id_Sitio: this.state.id,
     };
 
-    const url = "http://localhost:4000";
+    const url = "http://172.18.10.79:4000";
     axios({
       method: "post",
       url: url,

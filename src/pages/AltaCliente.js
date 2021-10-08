@@ -3,6 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+
+
+const IP = process.env.IP;
+
+
 class AltaCliente extends Component {
   _isMounted = false;
   constructor(props) {
@@ -20,7 +25,7 @@ class AltaCliente extends Component {
     this._isMounted = true;
 
     if (this._isMounted) {
-      const url = "http://172.18.10.79:4000/clientes";
+      const url = "http://"+IP+"/clientes";
       axios({
         method: "get",
         url,
@@ -86,7 +91,7 @@ class AltaCliente extends Component {
       Nombre: this.state.Nombre.trim(),
       Numero: this.state.Numero.trim(),
     };
-    const url = "http://172.18.10.79:4000/clientes";
+    const url = "http://"+IP+"/clientes";
     axios({
       method: "post",
       url: url,

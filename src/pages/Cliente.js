@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
+const IP = process.env.IP;
+
+
+
 class Cliente extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +41,7 @@ class Cliente extends Component {
       Numero: this.state.Numero,
     };
 
-    const url = "http://172.18.10.79:4000/clientes";
+    const url = "http://"+IP+"/clientes";
 
     axios({
       method: "post",
@@ -62,7 +66,7 @@ class Cliente extends Component {
   };
 
   componentDidMount() {
-    const url = "http://172.18.10.79:4000/clientes";
+    const url = "http://"+IP+"/clientes";
 
 
     axios({

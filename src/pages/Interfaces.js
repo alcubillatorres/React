@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+ const IP = "localhost"
 
 class Interfaces extends Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class Interfaces extends Component {
 
   componentDidMount() {
     console.log("Component DidMount");
-    const url = "http://172.18.10.79:4000";
+    const url = "http://"+IP;
     const params = { id: this.state.id };
 
     axios({
@@ -86,7 +86,7 @@ class Interfaces extends Component {
       LanServidorDNS2: this.state.LanServidorDNS2.trim(),
     };
 
-    const url = "http://172.18.10.79:4000";
+    const url = "http://"+IP;
     axios({
       method: "post",
       url: url,

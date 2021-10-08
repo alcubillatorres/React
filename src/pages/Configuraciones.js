@@ -4,6 +4,9 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+
+const IP = process.env.IP;
+
 class Configuraciones extends Component {
   _isMounted = false;
   constructor(props) {
@@ -36,7 +39,7 @@ class Configuraciones extends Component {
   
   componentDidMount() {
     //console.log("Component DidMount");
-    const url = "http://172.18.10.79:4000/configuracion";
+    const url = "http://"+IP+"/configuracion";
     const params = { id: this.state.id };
 
     axios({
@@ -98,7 +101,7 @@ class Configuraciones extends Component {
       Id_Sitio: this.state.id,
     };
 
-    const url = "http://172.18.10.79:4000";
+    const url = "http://"+IP;
     axios({
       method: "post",
       url: url,

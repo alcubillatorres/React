@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
+
+const IP = process.env.IP;
+
 class AltaSitio extends Component {
   _isMounted = false;
   constructor(props) {
@@ -25,7 +28,7 @@ class AltaSitio extends Component {
     this._isMounted = true;
 
     if (this._isMounted) {
-      const url = "http://172.18.10.79:4000/sitios";
+      const url = "http://"+IP+"/sitios";
       const params = { id: this.state.id };
 
       axios({
@@ -128,7 +131,7 @@ class AltaSitio extends Component {
       async function postData(location) {
         try {
           let res = await axios({
-            url: "http://172.18.10.79:4000/sitios",
+            url: "http://"+IP+"/sitios",
             data,
             method: "post",
             timeout: 8000,

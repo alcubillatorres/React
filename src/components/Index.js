@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const IP = process.env.IP;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -78,7 +80,7 @@ class App extends Component {
       Gateway: this.state.Gateway,
       Vlan: this.state.Vlan,
     };
-    const url = "http://172.18.10.79:4000";
+    const url = "http://"+IP;
 
     console.log(data)
     axios({

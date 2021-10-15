@@ -4,10 +4,6 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
-
-const IP = process.env.IP;
-
-
 class AltaCliente extends Component {
   _isMounted = false;
   constructor(props) {
@@ -25,7 +21,7 @@ class AltaCliente extends Component {
     this._isMounted = true;
 
     if (this._isMounted) {
-      const url = "http://"+IP+"/clientes";
+      const url = "http://172.18.10.79:4000/clientes";
       axios({
         method: "get",
         url,
@@ -86,32 +82,66 @@ class AltaCliente extends Component {
   };
 
   handleSubmit = (event) => {
+    //console.log("handleSubmit");
+    event.preventDefault()
+    if (this.state.Nuevo === false) {
+      console.log("cliente existente");
+      localStorage.setItem("idCliente", JSON.stringify(this.state.id));
+
+      this.props.history.push({
+        pathname: "/altaSitio",
+      });
+    } else {
 
     const data = {
       Nombre: this.state.Nombre.trim(),
       Numero: this.state.Numero.trim(),
     };
-    const url = "http://"+IP+"/clientes";
-    axios({
-      method: "post",
-      url: url,
-      data,
-    }).then(
-      (response) => {
-        const { _id } = response.data;
-        localStorage.setItem("idCliente", JSON.stringify(_id));
-      },
-      (error) => {
-        alert("Ha ocurrido un error");
-        console.log(error);
-      }
-    );
+
     localStorage.setItem("nombre", JSON.stringify(this.state.Nombre));
     localStorage.setItem("numero", JSON.stringify(this.state.Numero));
-    localStorage.setItem("idCliente", JSON.stringify(this.state.id));
-    this.props.history.push({
-      pathname: "/altaSitio",
-    });
+
+
+    async function postData(location) {
+      try {
+        let res = await axios({
+          url: "http://172.18.10.79:4000/clientes",
+          data,
+          method: "post",
+          timeout: 8000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (res.status >= 200 && res.status < 300) {
+          console.log(res.data)
+          localStorage.setItem("idCliente", JSON.stringify(res.data._id));      
+        }
+        // Don't forget to return something
+        //console.log("antes return", res.data)
+        location.push({
+          pathname: "/altaSitio",
+        });
+        return res.data;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    postData(this.props.history)
+      .then(function (result) {
+        //console.log(".then",result);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
+    }//fin else
+
+
+   
+   
   };
 
   render() {

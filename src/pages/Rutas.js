@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
-const IP = "localhost:4000"
-
 class Rutas extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +26,7 @@ class Rutas extends Component {
   }
 
   componentDidMount() {
-    const url = "http://"+IP;
+    const url = "http://172.18.10.79:4000";
     const params = { id: this.state.id };
 
     axios({
@@ -109,7 +106,7 @@ class Rutas extends Component {
 
     // console.log(data);
 
-    const url = "http://"+IP+"/rutas";
+    const url = "http://172.18.10.79:4000/rutas";
 
     if (this.state.AliasWan !== "" || this.state.AliasLan !== "") {
       axios({

@@ -4,9 +4,6 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-
-const IP = process.env.IP;
-
 class Configuraciones extends Component {
   _isMounted = false;
   constructor(props) {
@@ -22,7 +19,7 @@ class Configuraciones extends Component {
       TipoIP: "MANUAL",
       DireccionIP: "",
       Mascara: "",
-      Gateway: "", 
+      Gateway: "",
       Vlan: "",
       LanAlias: "",
       LanDireccionIP: "",
@@ -34,37 +31,32 @@ class Configuraciones extends Component {
       LanServidorDNS1: "",
       LanServidorDNS2: "",
     };
-
   }
-  
-  componentDidMount() {
-    //console.log("Component DidMount");
-    const url = "http://"+IP+"/configuracion";
-    const params = { id: this.state.id };
 
-    axios({
-      method: "get",
-      url,
-      params,
-    }).then(
-      (response) => {
-        //console.log("status",response.status)
-        //console.log("res", response.data)
-        if(response.status === 200){
-          //console.log("status")
-          this.setState({
-            WanSaved: response.data.Wan,
-            LanSaved: response.data.Lan,
-          });
+  componentDidMount() {
+    this._isMounted = true;
+    if (this._isMounted) {
+      const params = { Id_Sitio: this.state.id };
+      axios({
+        method: "get",
+        url: "http://172.18.10.79:4000/configuraciones",
+        params,
+      }).then(
+        (response) => {
+          console.log("status", response.status);
+          if (response.status === 200) {
+            this.setState({
+              WanSaved: response.data.Wan,
+              LanSaved: response.data.Lan,
+            });
+          }
+        },
+        (error) => {
+          alert("Ha ocurrido un error");
+          console.log(error);
         }
-      
-       
-      },
-      (error) => {
-        alert("Ha ocurrido un error");
-        console.log(error);
-      }
-    );
+      );
+    }
   }
 
   handleOnChange = (e) => {
@@ -75,11 +67,10 @@ class Configuraciones extends Component {
     });
   };
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+  componentWillUnmount() {}
+
   handleSubmit = (event) => {
-    //console.log("handleSubmit");
+    event.preventDefault();
     const data = {
       TipoInterface: this.state.TipoInterface,
       Alias: this.state.Alias.trim(),
@@ -98,48 +89,33 @@ class Configuraciones extends Component {
       DHCPTo: this.state.DHCPTo.trim(),
       LanServidorDNS1: this.state.LanServidorDNS1.trim(),
       LanServidorDNS2: this.state.LanServidorDNS2.trim(),
-      Id_Sitio: this.state.id,
+      Id_Sitio: JSON.parse(localStorage.getItem("idSitio")),
     };
 
-    const url = "http://"+IP;
-    axios({
-      method: "post",
-      url: url,
-      data,
-    }).then(
-      (response) => {
-        this.setState({
-          TipoInterface: "",
-          Alias: "",
-          Servicio: "",
-          TipoIP: "MANUAL",
-          DireccionIP: "",
-          Mascara: "",
-          Gateway: "",
-          Vlan: "",
-          LanAlias: "",
-          LanMascara: "",
-          LanDireccionIP: "",
-          LanVlan: "",
-          LanDHCP: "SI",
-          DHCPFrom: "",
-          DHCPTo: "",
-          LanServidorDNS1: "",
-          LanServidorDNS2: "",
-        });
-      },
-      (error) => {
-        alert("Ha ocurrido un error");
-        console.log(error);
+    const sendPostRequest = async () => {
+      try {
+        const resp = await axios.post(
+          "http://172.18.10.79:4000/configuraciones",
+          data
+        );
+        if (resp.status === 200) {
+          this.setState({
+            WanSaved: resp.data.Wan,
+            LanSaved: resp.data.Lan,
+          });
+        }
+      } catch (err) {
+        console.error(err);
       }
-    );
+    };
+
+    sendPostRequest();
   };
-  
 
   render() {
     return (
       <div className="container">
-       <Navbar />
+        <Navbar />
         <div className="mt-auto p-2 alert alert-light">
           <Link to="/" className="alert-link">
             <h4 className="d-inline">Inicio&gt;</h4>
@@ -174,124 +150,124 @@ class Configuraciones extends Component {
 
           {/* Configuración WAN ///////////////////////////////////////////////////////*/}
           {this.state.WanSaved.length === 0 && (
-          <span>
-            {this.state.TipoInterface === "WAN" && (
-              <div className="align-items-center">
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Nombre WAN (Alias)</label>
-                  <input
-                    className="form-control ml-2"
-                    name="Alias"
-                    type="text"
-                    value={this.state.Alias}
-                    onChange={this.handleOnChange}
-                    required
-                  />
-                  <span className="tc-img">
-                    &ensp; Nombre con la que se va a identificar a la interface
-                  </span>
-                </div>
+            <span>
+              {this.state.TipoInterface === "WAN" && (
+                <div className="align-items-center">
+                  <div className="mb-2 d-flex align-items-center">
+                    <label>Nombre WAN (Alias)</label>
+                    <input
+                      className="form-control ml-2"
+                      name="Alias"
+                      type="text"
+                      value={this.state.Alias}
+                      onChange={this.handleOnChange}
+                      required
+                    />
+                    <span className="tc-img">
+                      &ensp; Nombre con la que se va a identificar a la
+                      interface
+                    </span>
+                  </div>
 
-                <div className="mb-2">
-                  <label>Servicio</label>
-                  <select
-                    required
-                    name="Servicio"
-                    value={this.state.Servicio}
-                    onChange={this.handleOnChange}
-                    className="form-select ml-2"
-                  >
-                    <option value="MPLS">MPLS</option>
-                    <option value="INTERNET">INTERNET</option>
-                  </select>
-                </div>
-
-                <div className="select-control mb-2 d-flex align-items-center">
-                  <label>Tipo de IP</label>
-                  <select
-                    required
-                    name="TipoIP"
-                    value={this.state.TipoIP}
-                    onChange={this.handleOnChange}
-                    className="form-select ml-2"
-                  >
-                    <option value="MANUAL">MANUAL</option>
-                    <option value="DHCP">DHCP</option>
-                    <option value="PPPoE">PPPoE</option>
-                  </select>
-                  <span className="tc-img">
-                    &ensp; De que manera se le asignará la direccion IP a la
-                    interface
-                  </span>
-                </div>
-                {this.state.TipoIP === "MANUAL" && (
-                  <span>
-                    <div className="mb-2 d-flex align-items-center">
-                      <label>Dirección IP</label>
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="DireccionIP"
-                        value={this.state.DireccionIP}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-                      <span className="tc-img">
-                        &ensp; Direccion IP de la interface del firewall.
-                      </span>
-                    </div>
-
-                    <div className="mb-2 d-flex align-items-center">
-                      <label>Máscara de Red</label>
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="Mascara"
-                        value={this.state.Mascara}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="mb-2 d-flex align-items-center">
-                      <label>Gateway</label>
-                      <input
-                        className="form-control ml-2"
-                        type="text"
-                        name="Gateway"
-                        value={this.state.Gateway}
-                        onChange={this.handleOnChange}
-                        required
-                      />
-                    </div>
-                  </span>
-                )}
-
-                <div className="mb-2 d-flex align-items-center">
-                  <label>VLAN</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    name="Vlan"
-                    value={this.state.Vlan}
-                    onChange={this.handleOnChange}
-                    placeholder="[1-4096]"
-                    required
-                  />
-                </div>
-               
-                    <button
-                      type="submit"
-                      className="mt-3 btn btn-outline-primary"
+                  <div className="mb-2">
+                    <label>Servicio</label>
+                    <select
+                      required
+                      name="Servicio"
+                      value={this.state.Servicio}
+                      onChange={this.handleOnChange}
+                      className="form-select ml-2"
                     >
-                      Agregar
-                    </button>
-                 
-                <br></br>
-                <br></br>
-              </div>
-            )}
-          </span>
+                      <option value="MPLS">MPLS</option>
+                      <option value="INTERNET">INTERNET</option>
+                    </select>
+                  </div>
+
+                  <div className="select-control mb-2 d-flex align-items-center">
+                    <label>Tipo de IP</label>
+                    <select
+                      required
+                      name="TipoIP"
+                      value={this.state.TipoIP}
+                      onChange={this.handleOnChange}
+                      className="form-select ml-2"
+                    >
+                      <option value="MANUAL">MANUAL</option>
+                      <option value="DHCP">DHCP</option>
+                      <option value="PPPoE">PPPoE</option>
+                    </select>
+                    <span className="tc-img">
+                      &ensp; De que manera se le asignará la direccion IP a la
+                      interface
+                    </span>
+                  </div>
+                  {this.state.TipoIP === "MANUAL" && (
+                    <span>
+                      <div className="mb-2 d-flex align-items-center">
+                        <label>Dirección IP</label>
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="DireccionIP"
+                          value={this.state.DireccionIP}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+                        <span className="tc-img">
+                          &ensp; Direccion IP de la interface del firewall.
+                        </span>
+                      </div>
+
+                      <div className="mb-2 d-flex align-items-center">
+                        <label>Máscara de Red</label>
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="Mascara"
+                          value={this.state.Mascara}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+                      </div>
+
+                      <div className="mb-2 d-flex align-items-center">
+                        <label>Gateway</label>
+                        <input
+                          className="form-control ml-2"
+                          type="text"
+                          name="Gateway"
+                          value={this.state.Gateway}
+                          onChange={this.handleOnChange}
+                          required
+                        />
+                      </div>
+                    </span>
+                  )}
+
+                  <div className="mb-2 d-flex align-items-center">
+                    <label>VLAN</label>
+                    <input
+                      className="form-control ml-2"
+                      type="number"
+                      name="Vlan"
+                      value={this.state.Vlan}
+                      onChange={this.handleOnChange}
+                      placeholder="[1-4096]"
+                      required
+                    />
+                  </div>
+
+                  <br></br>
+                  <br></br>
+                  <button
+                    type="submit"
+                    className="mt-3 btn btn-outline-primary"
+                  >
+                    Agregar
+                  </button>
+                </div>
+              )}
+            </span>
           )}
           {/* FIN Configuración WAN//////////////////////////////////////////////*/}
 
@@ -347,7 +323,7 @@ class Configuraciones extends Component {
                     <label>VLAN</label>
                     <input
                       className="form-control ml-2"
-                      type="text"
+                      type="number"
                       name="LanVlan"
                       value={this.state.LanVlan}
                       onChange={this.handleOnChange}
@@ -433,14 +409,14 @@ class Configuraciones extends Component {
                       </div>
                     </span>
                   )}
+                  <br></br>
+                  <br></br>
                   <button
                     type="submit"
                     className="mt-3 btn btn-outline-primary"
                   >
                     Agregar
                   </button>
-                  <br></br>
-                  <br></br>
                 </div>
               )}
             </div>
@@ -527,6 +503,15 @@ class Configuraciones extends Component {
 
           <br></br>
           <br></br>
+
+          <div className="mb-2 d-flex align-items-center invisible">
+            <input
+              className="form-control ml-2 d-none"
+              type="text"
+              name="Id_Sitio"
+              value={this.state.id}
+            />
+          </div>
         </form>
       </div>
     );

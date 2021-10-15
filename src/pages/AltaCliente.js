@@ -31,6 +31,13 @@ class AltaCliente extends Component {
             this.setState({
               Nuevo: true,
             });
+            document.getElementById("Nombre").focus();
+
+            document.getElementById("Nombre").attributes.required = "required";
+            document.getElementById("Nombre").removeAttribute("readonly");
+
+            document.getElementById("Numero").attributes.required = "required";
+            document.getElementById("Numero").removeAttribute("readonly");
           }
           this.setState({
             Clientes: response.data,
@@ -71,6 +78,13 @@ class AltaCliente extends Component {
       Nombre: "",
       Numero: "",
     });
+    document.getElementById("Nombre").focus();
+
+    document.getElementById("Nombre").attributes.required = "required";
+    document.getElementById("Nombre").removeAttribute("readonly");
+
+    document.getElementById("Numero").attributes.required = "required";
+    document.getElementById("Numero").removeAttribute("readonly");
   };
 
   handleChange = (e) => {
@@ -83,65 +97,63 @@ class AltaCliente extends Component {
 
   handleSubmit = (event) => {
     //console.log("handleSubmit");
-    event.preventDefault()
-    if (this.state.Nuevo === false) {
-      console.log("cliente existente");
-      localStorage.setItem("idCliente", JSON.stringify(this.state.id));
-
-      this.props.history.push({
-        pathname: "/altaSitio",
-      });
-    } else {
-
-    const data = {
-      Nombre: this.state.Nombre.trim(),
-      Numero: this.state.Numero.trim(),
-    };
+    event.preventDefault();
+    //existente//
 
     localStorage.setItem("nombre", JSON.stringify(this.state.Nombre));
     localStorage.setItem("numero", JSON.stringify(this.state.Numero));
 
-
-    async function postData(location) {
-      try {
-        let res = await axios({
-          url: "http://172.18.10.79:4000/clientes",
-          data,
-          method: "post",
-          timeout: 8000,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (res.status >= 200 && res.status < 300) {
-          console.log(res.data)
-          localStorage.setItem("idCliente", JSON.stringify(res.data._id));      
-        }
-        // Don't forget to return something
-        //console.log("antes return", res.data)
-        location.push({
-          pathname: "/altaSitio",
-        });
-        return res.data;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    postData(this.props.history)
-      .then(function (result) {
-        //console.log(".then",result);
-      })
-      .catch(function (error) {
-        console.log(error);
+    if (this.state.Nuevo === false) {
+      localStorage.setItem("idCliente", JSON.stringify(this.state.id));
+      this.props.history.push({
+        pathname: "/altaSitio",
+        name: this.state.Nombre,
+        number: this.state.Numero,
+        id: this.state.id,
       });
+    } else {
+      //Nuevo//
+      const data = {
+        Nombre: this.state.Nombre.trim(),
+        Numero: this.state.Numero.trim(),
+      };
 
+      async function postData(location) {
+        try {
+          let res = await axios({
+            url: "http://172.18.10.79:4000/clientes",
+            data,
+            method: "post",
+            timeout: 8000,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (res.status >= 200 && res.status < 300) {
+            //console.log(res.data)
+            localStorage.setItem("idCliente", JSON.stringify(res.data._id));
+          }
+          location.props.history.push({
+            pathname: "/altaSitio",
+            name: location.state.Nombre,
+            number: location.state.Numero,
+            id: location.state.id,
+          });
 
-    }//fin else
+          return res.data;
+        } catch (err) {
+          console.error(err);
+        }
+      }
 
-
-   
-   
+      postData(this)
+        .then(function (result) {
+          //console.log(".then",result);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } //fin else
   };
 
   render() {
@@ -205,87 +217,61 @@ class AltaCliente extends Component {
                 ))}
               </select>
             </div>
-            <div className="col vcenter">
-              <button
-                type="text"
-                className="btn btn-primary btn-circle btn-sm"
-                onClick={this.handleonClick}
-              >
-                + Agregar Nuevo
-              </button>
-            </div>
           </div>
         )}
         <hr></hr>
+        <div className="col vcenter">
+          <button
+            type="text"
+            className="btn btn-primary btn-circle btn-sm"
+            onClick={this.handleonClick}
+          >
+            + Agregar Nuevo
+          </button>
+        </div>
+        <br></br>
 
         <form onSubmit={this.handleSubmit}>
           <div>
-            {this.state.Nuevo && (
-              <div>
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Nombre:</label>
-                  <input
-                    className="form-control ml-2 p-1"
-                    type="text"
-                    name="Nombre"
-                    value={this.state.Nombre}
-                    onChange={this.handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Número:</label>
-                  <input
-                    className="form-control ml-2 p-1"
-                    type="text"
-                    name="Numero"
-                    value={this.state.Numero}
-                    onChange={this.handleChange}
-                    required
-                  />
-                </div>
+            <div>
+              <div className="mb-2 d-flex align-items-center">
+                <label>Nombre:</label>
+                <input
+                  className="form-control ml-2 p-1 focusInput"
+                  type="text"
+                  name="Nombre"
+                  id="Nombre"
+                  value={this.state.Nombre}
+                  onChange={this.handleChange}
+                  readOnly
+                />
               </div>
-            )}
-
-            {this.state.Nuevo === false && (
-              <div>
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Nombre:</label>
-                  <input
-                    className="form-control ml-2 p-1"
-                    type="text"
-                    name="Nombre"
-                    value={this.state.Nombre}
-                    onChange={this.handleChange}
-                    readOnly
-                  />
-                </div>
-                <div className="mb-2 d-flex align-items-center">
-                  <label>Número:</label>
-                  <input
-                    className="form-control ml-2 p-1"
-                    type="text"
-                    name="Numero"
-                    value={this.state.Numero}
-                    onChange={this.handleChange}
-                    readOnly
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="row d-flex justify-content-around align-items-center ml-5 mt-3">
-              <br></br>
-              <div className="col vcenter">
-                <button
-                  type="submit"
-                  className="ml-2 p-1 btn btn-outline-primary"
-                >
-                  Siguiente &gt;&gt;
-                </button>
+              <div className="mb-2 d-flex align-items-center">
+                <label>Número:</label>
+                <input
+                  className="form-control ml-2 p-1"
+                  type="text"
+                  name="Numero"
+                  id="Numero"
+                  value={this.state.Numero}
+                  onChange={this.handleChange}
+                  readOnly
+                />
               </div>
             </div>
-            
+            <div className="row d-flex justify-content-around align-items-center ml-5 mt-3">
+              <br></br>
+              {this.state.Nombre && this.state.Numero && (
+                <div className="col vcenter">
+                  <button
+                    type="submit"
+                    className="ml-2 p-1 btn btn-outline-primary"
+                  >
+                    Siguiente &gt;&gt;
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </form>
       </div>

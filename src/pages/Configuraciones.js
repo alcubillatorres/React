@@ -10,7 +10,7 @@ class Configuraciones extends Component {
     super(props);
 
     this.state = {
-      id: JSON.parse(localStorage.getItem("idSitio")),
+      id: this.props.location.idSitio,
       WanSaved: "",
       LanSaved: "",
       TipoInterface: "",
@@ -43,7 +43,7 @@ class Configuraciones extends Component {
         params,
       }).then(
         (response) => {
-          console.log("status", response.status);
+          //console.log("status", response.status);
           if (response.status === 200) {
             this.setState({
               WanSaved: response.data.Wan,
@@ -89,7 +89,7 @@ class Configuraciones extends Component {
       DHCPTo: this.state.DHCPTo.trim(),
       LanServidorDNS1: this.state.LanServidorDNS1.trim(),
       LanServidorDNS2: this.state.LanServidorDNS2.trim(),
-      Id_Sitio: JSON.parse(localStorage.getItem("idSitio")),
+      Id_Sitio: this.state.id,
     };
 
     const sendPostRequest = async () => {
@@ -510,6 +510,7 @@ class Configuraciones extends Component {
               type="text"
               name="Id_Sitio"
               value={this.state.id}
+              readOnly
             />
           </div>
         </form>

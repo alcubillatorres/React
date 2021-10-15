@@ -140,3 +140,8 @@ td, tr, th {
 .green-input{
     background-color: rgb(140, 212, 140) !important;
 }
+
+.form-control:focus {
+    border-color: #62e47e !important;
+    box-shadow: 0 0 5px rgb(109, 228, 98) !important;
+  }

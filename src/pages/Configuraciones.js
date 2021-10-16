@@ -256,8 +256,6 @@ class Configuraciones extends Component {
                       required
                     />
                   </div>
-
-                  <br></br>
                   <br></br>
                   <button
                     type="submit"
@@ -410,7 +408,6 @@ class Configuraciones extends Component {
                     </span>
                   )}
                   <br></br>
-                  <br></br>
                   <button
                     type="submit"
                     className="mt-3 btn btn-outline-primary"
@@ -500,10 +497,6 @@ class Configuraciones extends Component {
             </div>
           )}
           {/*FIN MOSTRAR INTERFACES LAN REGISTRADAS////////////////////////////////////*/}
-
-          <br></br>
-          <br></br>
-
           <div className="mb-2 d-flex align-items-center invisible">
             <input
               className="form-control ml-2 d-none"

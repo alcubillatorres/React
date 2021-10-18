@@ -30,6 +30,7 @@ class Configuraciones extends Component {
       DHCPTo: "",
       LanServidorDNS1: "",
       LanServidorDNS2: "",
+      Descarga: false,
     };
   }
 
@@ -64,6 +65,39 @@ class Configuraciones extends Component {
     const { name, value } = e.target;
     this.setState({
       [name]: value,
+    });
+  };
+
+  hanleDescarga = (e) =>{
+
+  }
+
+  handlePython = (e) => {
+    const params = { Id_Sitio: this.state.id };
+    axios({
+      method: "get",
+      url: "http://localhost:4000/python",
+      params,
+    }).then((response) => {
+      /* 
+      var saveData = (function () {
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        return function () {
+          var blob = new File([response.data], "configuracion.txt");
+          var url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = blob.name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        };
+      })();
+      saveData(); */
+
+      this.setState({
+        Descarga: true,
+      });
     });
   };
 
@@ -507,6 +541,27 @@ class Configuraciones extends Component {
             />
           </div>
         </form>
+        <div className="col">
+          <div className="row">
+            {this.state.LanSaved.length !== 0 &&
+              this.state.WanSaved.length !== 0 && (
+                  <button
+                    onClick={this.handlePython}
+                    type="submit"
+                    className="mt-3 btn btn-outline-primary"
+                  >
+                    Generar Script
+                  </button>
+              )}
+          </div>
+          <div className="row">
+            {this.state.Descarga && (
+              <button type="submit" className="mt-3 btn btn-outline-primary" onClick={this.hanleDescarga}>
+                Descargar Script
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     );
   }

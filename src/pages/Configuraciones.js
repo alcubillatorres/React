@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { GlobalIP } from '../global'
 
 class Configuraciones extends Component {
   _isMounted = false;
@@ -11,6 +12,8 @@ class Configuraciones extends Component {
 
     this.state = {
       id: this.props.location.idSitio,
+      idCliente: this.props.location.idCliente,
+      key: this.props.location.Key,
       WanSaved: "",
       LanSaved: "",
       TipoInterface: "",
@@ -31,16 +34,19 @@ class Configuraciones extends Component {
       LanServidorDNS1: "",
       LanServidorDNS2: "",
       Descarga: false,
+      ip: GlobalIP,
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-      const params = { Id_Sitio: this.state.id };
+      const params = { 
+        Id_Sitio: this.state.id
+      };
       axios({
         method: "get",
-        url: "http://172.18.10.79:4000/configuraciones",
+        url: "http://"+this.state.ip+":4000/configuraciones",
         params,
       }).then(
         (response) => {
@@ -68,16 +74,29 @@ class Configuraciones extends Component {
     });
   };
 
-  hanleDescarga = (e) =>{
-
-  }
+  hanleDescarga = (e) => {};
 
   handlePython = (e) => {
-    const params = { Id_Sitio: this.state.id };
+    const Cliente = this.state.idCliente;
+    const Llave = this.state.key;
+    const date = new Date();
+    var formattedDate =
+      String(date.getDate()) +
+      String(date.getMonth() + 1) +
+      date.getFullYear().toString().slice(2) +
+      date.getHours() +
+      date.getMinutes() +
+      date.getSeconds();
+    const nombre = Cliente + "_" + Llave + "_" + formattedDate + ".txt";
+    console.log(nombre);
+    const data = { 
+      Id_Sitio: this.state.id,
+      nombre: nombre
+    };
     axios({
-      method: "get",
-      url: "http://localhost:4000/python",
-      params,
+      method: "post",
+      url: "http://"+this.state.ip+":4000/archivo",
+      data,
     }).then((response) => {
       /* 
       var saveData = (function () {
@@ -93,12 +112,12 @@ class Configuraciones extends Component {
           window.URL.revokeObjectURL(url);
         };
       })();
-      saveData(); */
+      saveData(); 
 
       this.setState({
         Descarga: true,
-      });
-    });
+      });*/
+    }); 
   };
 
   componentWillUnmount() {}
@@ -126,10 +145,10 @@ class Configuraciones extends Component {
       Id_Sitio: this.state.id,
     };
 
-    const sendPostRequest = async () => {
+    const sendPostRequest = async (location) => {
       try {
         const resp = await axios.post(
-          "http://172.18.10.79:4000/configuraciones",
+          "http://"+location.state.ip+":4000/configuraciones",
           data
         );
         if (resp.status === 200) {
@@ -142,8 +161,7 @@ class Configuraciones extends Component {
         console.error(err);
       }
     };
-
-    sendPostRequest();
+    sendPostRequest(this);
   };
 
   render() {
@@ -545,18 +563,22 @@ class Configuraciones extends Component {
           <div className="row">
             {this.state.LanSaved.length !== 0 &&
               this.state.WanSaved.length !== 0 && (
-                  <button
-                    onClick={this.handlePython}
-                    type="submit"
-                    className="mt-3 btn btn-outline-primary"
-                  >
-                    Generar Script
-                  </button>
+                <button
+                  onClick={this.handlePython}
+                  type="submit"
+                  className="mt-3 btn btn-outline-primary"
+                >
+                  Generar Script
+                </button>
               )}
           </div>
           <div className="row">
             {this.state.Descarga && (
-              <button type="submit" className="mt-3 btn btn-outline-primary" onClick={this.hanleDescarga}>
+              <button
+                type="submit"
+                className="mt-3 btn btn-outline-primary"
+                onClick={this.hanleDescarga}
+              >
                 Descargar Script
               </button>
             )}

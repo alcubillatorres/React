@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { GlobalIP } from '../global'
 
 class AltaSitio extends Component {
   _isMounted = false;
@@ -20,13 +21,14 @@ class AltaSitio extends Component {
       Nuevo: false,
       Nombre: this.props.location.name,
       Numero: this.props.location.number,
+      ip: GlobalIP,
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-      const url = "http://172.18.10.79:4000/sitios";
+      const url = "http://"+this.state.ip+":4000/sitios";
       const params = { id: this.state.id };
 
       axios({
@@ -125,6 +127,8 @@ class AltaSitio extends Component {
       this.props.history.push({
         pathname: "/configuraciones",
         idSitio: this.state.idSitio,
+        idCliente: this.state.id,
+        Key: this.state.Key
       });
     } else {
       //console.log("configuracion Nueva");
@@ -138,11 +142,10 @@ class AltaSitio extends Component {
       };
 
       //console.log("data alta sitios", data)
-
       async function postData(location) {
         try {
           let res = await axios({
-            url: "http://172.18.10.79:4000/sitios",
+            url: "http://"+location.state.ip+":4000/sitios",
             data,
             method: "post",
             timeout: 8000,
@@ -155,7 +158,7 @@ class AltaSitio extends Component {
           }
           // Don't forget to return something
           // localStorage.setItem("idSitio", JSON.stringify(res.data));
-          location.push({
+          location.props.history.push({
             pathname: "/configuraciones",
             idSitio: res.data,
           });
@@ -164,10 +167,9 @@ class AltaSitio extends Component {
           console.error(err);
         }
       }
-
-      postData(this.props.history)
+      postData(this)
         .then(function (result) {
-  
+
         })
         .catch(function (error) {
           console.log(error);

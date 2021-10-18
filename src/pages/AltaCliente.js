@@ -3,25 +3,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { GlobalIP } from '../global'
 
 class AltaCliente extends Component {
   _isMounted = false;
   constructor(props) {
     super(props);
     this.state = {
+      ip: GlobalIP,
       Clientes: "",
       Nombre: "",
       Numero: "",
       Nuevo: false,
-      id: "",
+      id: ""
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
-
-    if (this._isMounted) {
-      const url = "http://172.18.10.79:4000/clientes";
+      const url = "http://"+this.state.ip+":4000/clientes";
       axios({
         method: "get",
         url,
@@ -50,7 +50,7 @@ class AltaCliente extends Component {
           console.log(error);
         }
       );
-    }
+    
   }
 
   componentWillUnmount() {
@@ -121,7 +121,7 @@ class AltaCliente extends Component {
       async function postData(location) {
         try {
           let res = await axios({
-            url: "http://172.18.10.79:4000/clientes",
+            url: "http://"+location.state.ip+":4000/clientes",
             data,
             method: "post",
             timeout: 8000,

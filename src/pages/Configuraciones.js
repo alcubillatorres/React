@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { GlobalIP } from '../global'
+import { GlobalIP } from "../global";
 
 class Configuraciones extends Component {
   _isMounted = false;
@@ -11,9 +11,9 @@ class Configuraciones extends Component {
     super(props);
 
     this.state = {
-      id: this.props.location.idSitio,
-      idCliente: this.props.location.idCliente,
-      key: this.props.location.Key,
+      id: JSON.parse(localStorage.getItem("idSitio")),
+      idCliente: JSON.parse(localStorage.getItem("idCliente")),
+      key: JSON.parse(localStorage.getItem("Key")),
       WanSaved: "",
       LanSaved: "",
       TipoInterface: "",
@@ -33,7 +33,6 @@ class Configuraciones extends Component {
       DHCPTo: "",
       LanServidorDNS1: "",
       LanServidorDNS2: "",
-      Descarga: false,
       ip: GlobalIP,
     };
   }
@@ -41,12 +40,12 @@ class Configuraciones extends Component {
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-      const params = { 
-        Id_Sitio: this.state.id
+      const params = {
+        Id_Sitio: this.state.id,
       };
       axios({
         method: "get",
-        url: "http://"+this.state.ip+":4000/configuraciones",
+        url: "http://" + this.state.ip + ":4000/configuraciones",
         params,
       }).then(
         (response) => {
@@ -74,7 +73,7 @@ class Configuraciones extends Component {
     });
   };
 
-  hanleDescarga = (e) => {};
+
 
   handlePython = (e) => {
     const Cliente = this.state.idCliente;
@@ -89,35 +88,39 @@ class Configuraciones extends Component {
       date.getSeconds();
     const nombre = Cliente + "_" + Llave + "_" + formattedDate + ".txt";
     console.log(nombre);
-    const data = { 
+    const data = {
       Id_Sitio: this.state.id,
-      nombre: nombre
+      nombre: nombre,
     };
     axios({
       method: "post",
-      url: "http://"+this.state.ip+":4000/archivo",
+      url: "http://" + this.state.ip + ":4000/archivo",
       data,
     }).then((response) => {
-      /* 
-      var saveData = (function () {
+      // creas el fichero con la API File
+      if(response.data){
+        var file = new File([response.data], nombre, {
+          type: "text/plain;charset=utf-8",
+        });
+  
+        // obtienes una URL para el fichero que acabas de crear
+        var url = window.URL.createObjectURL(file);
         var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        return function () {
-          var blob = new File([response.data], "configuracion.txt");
-          var url = window.URL.createObjectURL(blob);
-          a.href = url;
-          a.download = blob.name;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        };
-      })();
-      saveData(); 
-
-      this.setState({
-        Descarga: true,
-      });*/
-    }); 
+        const selector = document.querySelector("#selector");
+        selector.insertAdjacentElement("afterend", a);
+        // creas un enlace y lo añades al documento
+     
+        //document.body.appendChild(a);
+  
+        // actualizas los parámetros del enlace para descargar el fichero creado
+        a.href = url;
+        a.innerHTML = "Descargar Script";
+        a.download = file.name;
+        a.className = "mt-3 btn btn-outline-primary"
+      }
+     
+     
+    });
   };
 
   componentWillUnmount() {}
@@ -148,7 +151,7 @@ class Configuraciones extends Component {
     const sendPostRequest = async (location) => {
       try {
         const resp = await axios.post(
-          "http://"+location.state.ip+":4000/configuraciones",
+          "http://" + location.state.ip + ":4000/configuraciones",
           data
         );
         if (resp.status === 200) {
@@ -560,7 +563,7 @@ class Configuraciones extends Component {
           </div>
         </form>
         <div className="col">
-          <div className="row">
+          <div className="row" id="selector">
             {this.state.LanSaved.length !== 0 &&
               this.state.WanSaved.length !== 0 && (
                 <button
@@ -571,17 +574,6 @@ class Configuraciones extends Component {
                   Generar Script
                 </button>
               )}
-          </div>
-          <div className="row">
-            {this.state.Descarga && (
-              <button
-                type="submit"
-                className="mt-3 btn btn-outline-primary"
-                onClick={this.hanleDescarga}
-              >
-                Descargar Script
-              </button>
-            )}
           </div>
         </div>
       </div>

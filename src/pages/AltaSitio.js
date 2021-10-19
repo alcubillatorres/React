@@ -114,7 +114,8 @@ class AltaSitio extends Component {
 
   handleSubmitOlder = (event) => {
     event.preventDefault();
-
+    localStorage.setItem("Key", JSON.stringify(this.state.Key));
+  
     /*  localStorage.setItem("key", JSON.stringify(this.state.Key));
     localStorage.setItem("sitio", JSON.stringify(this.state.Sitio));
     localStorage.setItem("marca", JSON.stringify(this.state.Marca));
@@ -122,8 +123,8 @@ class AltaSitio extends Component {
 
     if (this.state.Nuevo === false) {
       //console.log("configuracion existente");
-      /*  localStorage.setItem("idSitio", JSON.stringify(this.state.idSitio)); */
-
+      /*  */
+      localStorage.setItem("idSitio", JSON.stringify(this.state.idSitio)); 
       this.props.history.push({
         pathname: "/configuraciones",
         idSitio: this.state.idSitio,
@@ -157,7 +158,7 @@ class AltaSitio extends Component {
             // test for status you want, etc
           }
           // Don't forget to return something
-          // localStorage.setItem("idSitio", JSON.stringify(res.data));
+           localStorage.setItem("idSitio", JSON.stringify(res.data));
           location.props.history.push({
             pathname: "/configuraciones",
             idSitio: res.data,

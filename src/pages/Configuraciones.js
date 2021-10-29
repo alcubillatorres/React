@@ -14,6 +14,7 @@ class Configuraciones extends Component {
       id: JSON.parse(localStorage.getItem("idSitio")),
       idCliente: JSON.parse(localStorage.getItem("idCliente")),
       key: JSON.parse(localStorage.getItem("Key")),
+      NombreCliente: JSON.parse(localStorage.getItem("nombre")),
       WanSaved: "",
       LanSaved: "",
       TipoInterface: "",
@@ -34,6 +35,8 @@ class Configuraciones extends Component {
       LanServidorDNS1: "",
       LanServidorDNS2: "",
       ip: GlobalIP,
+      Modelo: JSON.parse(localStorage.getItem("Modelo")),
+      boton: false,
     };
   }
 
@@ -73,54 +76,59 @@ class Configuraciones extends Component {
     });
   };
 
-
-
   handlePython = (e) => {
-    const Cliente = this.state.idCliente;
-    const Llave = this.state.key;
-    const date = new Date();
-    var formattedDate =
-      String(date.getDate()) +
-      String(date.getMonth() + 1) +
-      date.getFullYear().toString().slice(2) +
-      date.getHours() +
-      date.getMinutes() +
-      date.getSeconds();
-    const nombre = Cliente + "_" + Llave + "_" + formattedDate + ".txt";
-    console.log(nombre);
-    const data = {
-      Id_Sitio: this.state.id,
-      nombre: nombre,
-    };
-    axios({
-      method: "post",
-      url: "http://" + this.state.ip + ":4000/archivo",
-      data,
-    }).then((response) => {
-      // creas el fichero con la API File
-      if(response.data){
-        var file = new File([response.data], nombre, {
-          type: "text/plain;charset=utf-8",
-        });
+
+    if(this.state.boton === false){
+      const date = new Date();
+    
+      var formattedDate =
+        String(date.getDate()) +
+        String(date.getMonth() + 1) +
+        date.getFullYear().toString().slice(2) +
+        date.getHours() +
+        date.getMinutes() +
+        date.getSeconds();
   
-        // obtienes una URL para el fichero que acabas de crear
-        var url = window.URL.createObjectURL(file);
-        var a = document.createElement("a");
-        const selector = document.querySelector("#selector");
-        selector.insertAdjacentElement("afterend", a);
-        // creas un enlace y lo añades al documento
-     
-        //document.body.appendChild(a);
+      const nombre = 
+      this.state.NombreCliente + "_"+ 
+      this.state.key + "_" + 
+      this.state.id + "_" + 
+      formattedDate + ".txt";
   
-        // actualizas los parámetros del enlace para descargar el fichero creado
-        a.href = url;
-        a.innerHTML = "Descargar Script";
-        a.download = file.name;
-        a.className = "mt-3 btn btn-outline-primary"
-      }
-     
-     
-    });
+      const data = {
+        Id_Sitio: this.state.id,
+        nombre: nombre,
+        key: this.state.key,
+        NombreCliente : this.state.NombreCliente,
+        Modelo : this.state.Modelo,
+      };
+  
+      axios({
+        method: "post",
+        url: "http://" + this.state.ip + ":4000/archivo",
+        data,
+      }).then((response) => {
+        // creas el fichero con la API File
+        if(response.data){
+          var file = new File([response.data], "ARCHIVO_DE_CONFIG_"+nombre, {
+            type: "text/plain;charset=utf-8",
+          });
+  
+          var url = window.URL.createObjectURL(file);
+          var a = document.createElement("a");
+          const selector = document.querySelector("#selector");
+          selector.insertAdjacentElement("afterend", a);
+          a.href = url;
+          a.innerHTML = "Descargar Script";
+          a.download = file.name;
+          a.className = "mt-3 btn btn-outline-primary"
+          this.setState({
+            boton: true
+          })
+        }     
+      });
+    }
+  
   };
 
   componentWillUnmount() {}

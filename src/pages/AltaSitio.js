@@ -115,7 +115,7 @@ class AltaSitio extends Component {
   handleSubmitOlder = (event) => {
     event.preventDefault();
     localStorage.setItem("Key", JSON.stringify(this.state.Key));
-  
+    localStorage.setItem("Modelo", JSON.stringify(this.state.Modelo));
     /*  localStorage.setItem("key", JSON.stringify(this.state.Key));
     localStorage.setItem("sitio", JSON.stringify(this.state.Sitio));
     localStorage.setItem("marca", JSON.stringify(this.state.Marca));
@@ -337,7 +337,7 @@ class AltaSitio extends Component {
                       required
                     >
                       <option value=""></option>
-                      <option value="100F">100F</option>
+                      <option value="Fortigate 30E">30E</option>
                       <option value="60F">60F</option>
                     </select>
                   </div>

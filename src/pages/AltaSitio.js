@@ -338,7 +338,7 @@ class AltaSitio extends Component {
                     >
                       <option value=""></option>
                       <option value="Fortigate 30E">30E</option>
-                      <option value="60F">60F</option>
+                      <option value="Fortigate 100F">100F</option>
                     </select>
                   </div>
                 )}
